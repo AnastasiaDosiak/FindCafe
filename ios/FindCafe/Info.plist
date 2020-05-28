@@ -20,6 +20,10 @@
 	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+      <string>App uses geolocation for searching cafes</string>
+      <key>NSLocationAlwaysUsageDescription</key>
+      <string>App uses geolocation for searching cafes</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
