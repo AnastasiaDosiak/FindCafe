@@ -5,23 +5,14 @@
  * @format
  * @flow strict-local
  */
-
 import React, {useState, useEffect, memo} from 'react';
-import {
-  StyleSheet,
-  View,
-  Platform,
-  Text,
-  Image,
-  Dimensions,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, View, Platform} from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import SearchInput from './components/search-input/SearchInput';
 import {request, PERMISSIONS} from 'react-native-permissions';
 import Geolocation from '@react-native-community/geolocation';
 import CafeMarker from './components/cafe-markers/CafeMarker';
-import Carousel from 'react-native-snap-carousel';
+import CafeInfo from './components/cafe-info/CafeInfo';
 
 const initialState = {
   latitude: 0,
@@ -86,18 +77,6 @@ const App: () => React$Node = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const renderPhoto = ({item}) => {
-    return (
-      <Image
-        style={styles.image}
-        source={{
-          uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${item.photo_reference}&key=AIzaSyAEdqz_mTq1OkqEQnFotJpF2QPI90TYjrc`,
-        }}
-      />
-    );
-  };
-  const sliderWidth = Dimensions.get('window').width;
-
   const closeActiveCafe = () => {
     setActiveCafe(null);
   };
@@ -109,7 +88,6 @@ const App: () => React$Node = () => {
         latitude: cafeLocation.lat,
         longitude: cafeLocation.lng,
       };
-
       return coordinatesCafe;
     } else {
       return region;
@@ -125,7 +103,7 @@ const App: () => React$Node = () => {
             provider={PROVIDER_GOOGLE}
             region={setActiveCoordinates()}
             style={activeCafe !== null ? styles.centerMap : styles.map}
-            maxZoomLevel={16}
+            maxZoomLevel={17}
             initialRegion={setActiveCoordinates()}>
             {cafes.map((cafe, index) => (
               <CafeMarker key={index} cafe={cafe} onPress={handlePressCafe} />
@@ -137,25 +115,10 @@ const App: () => React$Node = () => {
             />
           </MapView>
           {activeCafe && (
-            <View style={styles.cafeContainer}>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={closeActiveCafe}>
-                <Image
-                  style={styles.closeIcon}
-                  source={require('./components/images/trash.png')}
-                />
-              </TouchableOpacity>
-              <Text style={styles.cafeName}>{activeCafe.name}</Text>
-              <Text style={styles.cafeRating}>Rating: {activeCafe.rating}</Text>
-              <Carousel
-                sliderWidth={sliderWidth}
-                itemWidth={sliderWidth}
-                contentContainerCustomStyle={styles.scroll}
-                renderItem={renderPhoto}
-                data={activeCafe.photos}
-              />
-            </View>
+            <CafeInfo
+              closeActiveCafe={closeActiveCafe}
+              activeCafe={activeCafe}
+            />
           )}
         </View>
       </View>
@@ -170,17 +133,6 @@ const styles = StyleSheet.create({
   },
   centerMap: {
     height: '40%',
-  },
-  closeButton: {
-    width: '100%',
-    backgroundColor: 'darkgrey',
-    padding: 4,
-  },
-  closeIcon: {
-    marginTop: 0,
-    marginRight: 'auto',
-    marginBottom: 0,
-    marginLeft: 'auto',
   },
   scroll: {
     height: '65%',
@@ -203,25 +155,6 @@ const styles = StyleSheet.create({
 
     elevation: 13,
     marginBottom: '60%',
-  },
-  image: {
-    height: '100%',
-  },
-  cafeContainer: {
-    marginTop: '60%',
-    backgroundColor: 'white',
-    zIndex: 2,
-    ...StyleSheet.absoluteFillObject,
-  },
-  cafeName: {
-    marginBottom: 10,
-    marginTop: 15,
-    fontSize: 25,
-    fontWeight: 'bold',
-  },
-  cafeRating: {
-    fontSize: 20,
-    marginBottom: 15,
   },
 });
 

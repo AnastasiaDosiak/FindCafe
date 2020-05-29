@@ -14,6 +14,7 @@ const SearchComponent = ({onPickLocation}) => {
   const handleStartEditing = () => {
     setShowAutoComplete(true);
   };
+
   return (
     <View style={styles.searchContainer}>
       <GoogleAutoComplete

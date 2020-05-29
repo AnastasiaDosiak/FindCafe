@@ -10,6 +10,7 @@ const LocationItem = ({
     const res = await fetchDetails(place_id);
     onPress(res);
   };
+
   return (
     <TouchableOpacity onPress={handlePress}>
       <View style={styles.container}>

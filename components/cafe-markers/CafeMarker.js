@@ -2,8 +2,6 @@ import React, {memo} from 'react';
 import {Marker} from 'react-native-maps';
 
 const CafeMarker = ({cafe, onPress}) => {
-  console.log(onPress);
-
   const handlePress = () => {
     onPress(cafe);
   };
