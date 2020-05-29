@@ -66,8 +66,9 @@ const styles = StyleSheet.create({
     margin: 10,
     backgroundColor: 'white',
     height: 40,
-    borderColor: 'gray',
+    borderColor: 'grey',
     borderWidth: 1,
+    borderRadius: 4,
   },
   searchContainer: {
     maxHeight: '35%',

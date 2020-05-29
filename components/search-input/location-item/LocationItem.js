@@ -22,12 +22,13 @@ const LocationItem = ({
 const styles = StyleSheet.create({
   text: {
     fontWeight: 'bold',
+    color: 'grey',
   },
   container: {
-    borderBottomColor: 'black',
+    borderBottomColor: 'grey',
     borderBottomWidth: 1,
     margin: 15,
-    paddingBottom: 5,
+    paddingBottom: 6,
   },
 });
 

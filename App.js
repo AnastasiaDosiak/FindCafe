@@ -60,7 +60,7 @@ const App: () => React$Node = () => {
 
   const findNearbyCafe = (location) => {
     fetch(
-      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.latitude},${location.longitude}&radius=5000&types=food&key=AIzaSyAEdqz_mTq1OkqEQnFotJpF2QPI90TYjrc`,
+      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.latitude},${location.longitude}&radius=5000&types=cafe&key=AIzaSyAEdqz_mTq1OkqEQnFotJpF2QPI90TYjrc`,
     )
       .then((response) => response.json())
       .then((response) => setCafes(response.results));
@@ -101,6 +101,21 @@ const App: () => React$Node = () => {
   const closeActiveCafe = () => {
     setActiveCafe(null);
   };
+
+  const setActiveCoordinates = () => {
+    if (activeCafe !== null) {
+      const cafeLocation = activeCafe.geometry.location;
+      const coordinatesCafe = {
+        latitude: cafeLocation.lat,
+        longitude: cafeLocation.lng,
+      };
+
+      return coordinatesCafe;
+    } else {
+      return region;
+    }
+  };
+
   return (
     <>
       <View style={styles.body}>
@@ -108,21 +123,28 @@ const App: () => React$Node = () => {
         <View style={styles.mapContainer}>
           <MapView
             provider={PROVIDER_GOOGLE}
-            region={region}
-            style={styles.map}
-            maxZoomLevel={18}
-            initialRegion={region}>
+            region={setActiveCoordinates()}
+            style={activeCafe !== null ? styles.centerMap : styles.map}
+            maxZoomLevel={16}
+            initialRegion={setActiveCoordinates()}>
             {cafes.map((cafe, index) => (
               <CafeMarker key={index} cafe={cafe} onPress={handlePressCafe} />
             ))}
-            <Marker coordinate={region} />
+            <Marker
+              coordinate={region}
+              pinColor={'black'}
+              title={'your current location'}
+            />
           </MapView>
           {activeCafe && (
             <View style={styles.cafeContainer}>
               <TouchableOpacity
                 style={styles.closeButton}
                 onPress={closeActiveCafe}>
-                <Text style={styles.closeIcon}>x</Text>
+                <Image
+                  style={styles.closeIcon}
+                  source={require('./components/images/trash.png')}
+                />
               </TouchableOpacity>
               <Text style={styles.cafeName}>{activeCafe.name}</Text>
               <Text style={styles.cafeRating}>Rating: {activeCafe.rating}</Text>
@@ -146,14 +168,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'whitesmoke',
     height: '100%',
   },
+  centerMap: {
+    height: '40%',
+  },
   closeButton: {
     width: '100%',
-    backgroundColor: 'black',
+    backgroundColor: 'darkgrey',
+    padding: 4,
   },
   closeIcon: {
-    color: 'white',
-    fontSize: 20,
-    textAlign: 'center',
+    marginTop: 0,
+    marginRight: 'auto',
+    marginBottom: 0,
+    marginLeft: 'auto',
   },
   scroll: {
     height: '65%',
@@ -175,6 +202,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8.3,
 
     elevation: 13,
+    marginBottom: '60%',
   },
   image: {
     height: '100%',
