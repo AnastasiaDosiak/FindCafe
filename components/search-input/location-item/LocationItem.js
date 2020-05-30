@@ -12,11 +12,13 @@ const LocationItem = ({
   };
 
   return (
-    <TouchableOpacity onPress={handlePress}>
-      <View style={styles.container}>
-        <Text style={styles.text}>{description}</Text>
-      </View>
-    </TouchableOpacity>
+    <>
+      <TouchableOpacity onPress={handlePress}>
+        <View style={styles.container}>
+          <Text style={styles.text}>{description}</Text>
+        </View>
+      </TouchableOpacity>
+    </>
   );
 };
 

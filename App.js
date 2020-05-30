@@ -1,11 +1,4 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-import React, {useState, useEffect, memo} from 'react';
+import React, {useState, useEffect, memo, useCallback} from 'react';
 import {StyleSheet, View, Platform} from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import SearchInput from './components/search-input/SearchInput';
@@ -18,8 +11,10 @@ import {API_KEY} from './components/consts';
 const initialState = {
   latitude: 0,
   longitude: 0,
+  latitudeDelta: 0.09,
+  longitudeDelta: 0.035,
 };
-const App: () => React$Node = () => {
+const App = () => {
   const [region, setRegion] = useState(initialState);
   const [cafes, setCafes] = useState([]);
   const [activeCafe, setActiveCafe] = useState(null);
@@ -27,7 +22,6 @@ const App: () => React$Node = () => {
   const requestLocationPermission = async () => {
     if (Platform.OS === 'ios') {
       const response = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
-
       if (response === 'granted') {
         locateCurrentPosition();
       }
@@ -45,9 +39,13 @@ const App: () => React$Node = () => {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
       };
-      setRegion(location);
+      setRegion({...initialState, ...location});
       findNearbyCafe(location);
     });
+  };
+
+  const closeActiveCafe = () => {
+    setActiveCafe(null);
   };
 
   const findNearbyCafe = (location) => {
@@ -65,7 +63,7 @@ const App: () => React$Node = () => {
       },
     } = locationDetails;
     const location = {latitude: lat, longitude: lng};
-    setRegion(location);
+    setRegion({...initialState, ...location});
     findNearbyCafe(location);
   };
 
@@ -78,14 +76,11 @@ const App: () => React$Node = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const closeActiveCafe = () => {
-    setActiveCafe(null);
-  };
-
-  const setActiveCoordinates = () => {
+  const setActiveCoordinates = useCallback(() => {
     if (activeCafe !== null) {
       const cafeLocation = activeCafe.geometry.location;
       const coordinatesCafe = {
+        ...initialState,
         latitude: cafeLocation.lat,
         longitude: cafeLocation.lng,
       };
@@ -93,12 +88,16 @@ const App: () => React$Node = () => {
     } else {
       return region;
     }
-  };
+  }, [activeCafe, region]);
 
   return (
     <>
       <View style={styles.body}>
-        <SearchInput style={styles.input} onPickLocation={pickLocation} />
+        <SearchInput
+          style={styles.input}
+          onPickLocation={pickLocation}
+          onFocus={closeActiveCafe}
+        />
         <View style={styles.mapContainer}>
           <MapView
             provider={PROVIDER_GOOGLE}
@@ -111,7 +110,7 @@ const App: () => React$Node = () => {
             ))}
             <Marker
               coordinate={region}
-              pinColor={'black'}
+              pinColor={'blue'}
               title={'your current location'}
             />
           </MapView>
@@ -149,7 +148,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.41,
     shadowRadius: 9.11,
-
     elevation: 14,
   },
   map: {
@@ -162,7 +160,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
     shadowOpacity: 0.39,
     shadowRadius: 8.3,
-
     elevation: 13,
     marginBottom: '60%',
   },

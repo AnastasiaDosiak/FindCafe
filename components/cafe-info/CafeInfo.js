@@ -14,7 +14,6 @@ const CafeInfo = ({activeCafe, closeActiveCafe}) => {
   const sliderWidth = Dimensions.get('window').width;
   const renderPhoto = ({item}) => {
     const imageSrc = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${item.photo_reference}&key=${API_KEY}`;
-
     return (
       <Image
         style={styles.image}
@@ -71,6 +70,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 6,
+  },
+  cafeDetails: {
+    maxWidth: '90%',
   },
   cafeName: {
     fontSize: 25,

@@ -1,29 +1,32 @@
-import React, {useState, memo} from 'react';
-import {StyleSheet, ScrollView, View, TextInput} from 'react-native';
+import React, {useState, useRef, memo} from 'react';
+import {StyleSheet, ScrollView, View, TextInput, Platform} from 'react-native';
 import {GoogleAutoComplete} from 'react-native-google-autocomplete';
 import LocationItem from './location-item/LocationItem';
+import {API_KEY} from '../consts';
 
-const SearchComponent = ({onPickLocation}) => {
+const SearchComponent = ({onPickLocation, onFocus}) => {
   const [showAutoComplete, setShowAutoComplete] = useState(true);
   const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef(null);
   const handlePressAutoComplete = (details) => {
+    inputRef.current.blur();
     setShowAutoComplete(false);
     onPickLocation(details);
     setInputValue(details.formatted_address);
   };
   const handleFocus = () => {
+    onFocus();
     setShowAutoComplete(true);
   };
 
   return (
     <View style={styles.searchContainer}>
-      <GoogleAutoComplete
-        apiKey={'AIzaSyAEdqz_mTq1OkqEQnFotJpF2QPI90TYjrc'}
-        debounce={500}>
+      <GoogleAutoComplete apiKey={API_KEY} debounce={300}>
         {({handleTextChange, locationResults, fetchDetails}) => (
           <>
             <TextInput
               placeholder="Search places"
+              ref={inputRef}
               value={inputValue}
               onChangeText={(text) => {
                 setInputValue(text);
@@ -34,7 +37,7 @@ const SearchComponent = ({onPickLocation}) => {
               clearButtonMode={'while-editing'}
             />
             {showAutoComplete && inputValue.length > 0 && (
-              <ScrollView>
+              <ScrollView keyboardShouldPersistTaps="handled">
                 {locationResults.map((element) => (
                   <LocationItem
                     locationDetails={element}
@@ -54,7 +57,7 @@ const SearchComponent = ({onPickLocation}) => {
 
 const styles = StyleSheet.create({
   input: {
-    marginTop: 60,
+    marginTop: Platform.OS === 'ios' ? 45 : 15,
     paddingLeft: 20,
     shadowColor: '#000',
     shadowOffset: {
