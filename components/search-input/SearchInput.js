@@ -11,7 +11,7 @@ const SearchComponent = ({onPickLocation}) => {
     onPickLocation(details);
     setInputValue(details.formatted_address);
   };
-  const handleStartEditing = () => {
+  const handleFocus = () => {
     setShowAutoComplete(true);
   };
 
@@ -30,7 +30,7 @@ const SearchComponent = ({onPickLocation}) => {
                 handleTextChange(text);
               }}
               style={styles.input}
-              onFocus={handleStartEditing}
+              onFocus={handleFocus}
               clearButtonMode={'while-editing'}
             />
             {showAutoComplete && inputValue.length > 0 && (
@@ -62,17 +62,19 @@ const styles = StyleSheet.create({
       height: 3,
     },
     shadowOpacity: 0.27,
-    shadowRadius: 4.65,
+    shadowRadius: 1.65,
     elevation: 6,
     margin: 10,
     backgroundColor: 'white',
     height: 40,
     borderColor: 'grey',
     borderWidth: 1,
-    borderRadius: 4,
+    borderRadius: 5,
   },
   searchContainer: {
-    maxHeight: '35%',
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderColor: 'grey',
   },
 });
 

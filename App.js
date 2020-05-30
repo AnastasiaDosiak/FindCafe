@@ -13,6 +13,7 @@ import {request, PERMISSIONS} from 'react-native-permissions';
 import Geolocation from '@react-native-community/geolocation';
 import CafeMarker from './components/cafe-markers/CafeMarker';
 import CafeInfo from './components/cafe-info/CafeInfo';
+import {API_KEY} from './components/consts';
 
 const initialState = {
   latitude: 0,
@@ -51,7 +52,7 @@ const App: () => React$Node = () => {
 
   const findNearbyCafe = (location) => {
     fetch(
-      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.latitude},${location.longitude}&radius=5000&types=cafe&key=AIzaSyAEdqz_mTq1OkqEQnFotJpF2QPI90TYjrc`,
+      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.latitude},${location.longitude}&radius=5000&types=cafe&key=${API_KEY}`,
     )
       .then((response) => response.json())
       .then((response) => setCafes(response.results));
@@ -141,6 +142,15 @@ const styles = StyleSheet.create({
   mapContainer: {
     position: 'relative',
     height: '100%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 7,
+    },
+    shadowOpacity: 0.41,
+    shadowRadius: 9.11,
+
+    elevation: 14,
   },
   map: {
     height: '100%',

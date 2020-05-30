@@ -8,15 +8,18 @@ import {
   Dimensions,
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
+import {API_KEY} from '../consts';
 
 const CafeInfo = ({activeCafe, closeActiveCafe}) => {
   const sliderWidth = Dimensions.get('window').width;
   const renderPhoto = ({item}) => {
+    const imageSrc = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${item.photo_reference}&key=${API_KEY}`;
+
     return (
       <Image
         style={styles.image}
         source={{
-          uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${item.photo_reference}&key=AIzaSyAEdqz_mTq1OkqEQnFotJpF2QPI90TYjrc`,
+          uri: imageSrc,
         }}
       />
     );
@@ -24,18 +27,19 @@ const CafeInfo = ({activeCafe, closeActiveCafe}) => {
 
   return (
     <View style={styles.cafeContainer}>
-      <TouchableOpacity style={styles.closeButton} onPress={closeActiveCafe}>
-        <Image
-          style={styles.closeIcon}
-          source={require('../images/trash.png')}
-        />
-      </TouchableOpacity>
-      <Text numberOfLines={1} style={styles.cafeName}>
-        {activeCafe.name}
-      </Text>
-      <Text numberOfLines={1} style={styles.cafeRating}>
-        Rating: {activeCafe.rating}
-      </Text>
+      <View style={styles.cafeInfo}>
+        <View style={styles.cafeDetails}>
+          <Text numberOfLines={1} style={styles.cafeName}>
+            {activeCafe.name}
+          </Text>
+          <Text numberOfLines={1} style={styles.cafeRating}>
+            Rating: {activeCafe.rating}
+          </Text>
+        </View>
+        <TouchableOpacity onPress={closeActiveCafe}>
+          <Image source={require('../images/close.png')} />
+        </TouchableOpacity>
+      </View>
       <Carousel
         sliderWidth={sliderWidth}
         itemWidth={sliderWidth}
@@ -51,6 +55,8 @@ const styles = StyleSheet.create({
   cafeContainer: {
     marginTop: '60%',
     backgroundColor: 'white',
+    borderTopWidth: 1,
+    borderColor: 'grey',
     zIndex: 2,
     ...StyleSheet.absoluteFillObject,
   },
@@ -60,26 +66,18 @@ const styles = StyleSheet.create({
     margin: 15,
     paddingBottom: 6,
   },
-  closeButton: {
-    width: '100%',
-    backgroundColor: 'darkgrey',
-    padding: 4,
-  },
-  closeIcon: {
-    marginTop: 0,
-    marginRight: 'auto',
-    marginBottom: 0,
-    marginLeft: 'auto',
+  cafeInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 6,
   },
   cafeName: {
-    marginBottom: 10,
-    marginTop: 15,
     fontSize: 25,
     fontWeight: 'bold',
   },
   cafeRating: {
     fontSize: 20,
-    marginBottom: 15,
   },
   image: {
     height: '70%',
