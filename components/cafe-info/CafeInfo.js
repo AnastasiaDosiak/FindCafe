@@ -39,7 +39,7 @@ const CafeInfo = ({activeCafe, closeActiveCafe}) => {
           <Image source={require('../images/close.png')} />
         </TouchableOpacity>
       </View>
-      {activeCafe.photos.length > 0 && (
+      {activeCafe.photos && activeCafe.photos.length > 0 && (
         <Carousel
           sliderWidth={sliderWidth}
           itemWidth={sliderWidth}
