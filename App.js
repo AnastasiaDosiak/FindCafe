@@ -18,7 +18,7 @@ const App = () => {
   const [region, setRegion] = useState(initialState);
   const [cafes, setCafes] = useState([]);
   const [activeCafe, setActiveCafe] = useState(null);
-
+  const [activeCoordinates, setActiveCoordinates] = useState(null);
   const requestLocationPermission = async () => {
     if (Platform.OS === 'ios') {
       const response = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
@@ -63,6 +63,7 @@ const App = () => {
       },
     } = locationDetails;
     const location = {latitude: lat, longitude: lng};
+    setActiveCafe(null);
     setRegion({...initialState, ...location});
     findNearbyCafe(location);
   };
@@ -76,7 +77,7 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const setActiveCoordinates = useCallback(() => {
+  const updateActiveCoordinates = useCallback(() => {
     if (activeCafe !== null) {
       const cafeLocation = activeCafe.geometry.location;
       const coordinatesCafe = {
@@ -84,12 +85,14 @@ const App = () => {
         latitude: cafeLocation.lat,
         longitude: cafeLocation.lng,
       };
-      return coordinatesCafe;
+      setActiveCoordinates(coordinatesCafe);
     } else {
-      return region;
+      setActiveCoordinates(region);
     }
   }, [activeCafe, region]);
-
+  useEffect(() => {
+    updateActiveCoordinates();
+  }, [activeCafe, region, updateActiveCoordinates]);
   return (
     <>
       <View style={styles.body}>
@@ -101,12 +104,12 @@ const App = () => {
         <View style={styles.mapContainer}>
           <MapView
             provider={PROVIDER_GOOGLE}
-            region={setActiveCoordinates()}
+            region={activeCoordinates}
             style={activeCafe !== null ? styles.centerMap : styles.map}
             maxZoomLevel={17}
-            initialRegion={setActiveCoordinates()}>
-            {cafes.map((cafe, index) => (
-              <CafeMarker key={index} cafe={cafe} onPress={handlePressCafe} />
+            initialRegion={activeCoordinates}>
+            {cafes.map((cafe) => (
+              <CafeMarker key={cafe.id} cafe={cafe} onPress={handlePressCafe} />
             ))}
             <Marker
               coordinate={region}

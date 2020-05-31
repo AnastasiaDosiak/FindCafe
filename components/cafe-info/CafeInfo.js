@@ -39,13 +39,15 @@ const CafeInfo = ({activeCafe, closeActiveCafe}) => {
           <Image source={require('../images/close.png')} />
         </TouchableOpacity>
       </View>
-      <Carousel
-        sliderWidth={sliderWidth}
-        itemWidth={sliderWidth}
-        contentContainerCustomStyle={styles.scroll}
-        renderItem={renderPhoto}
-        data={activeCafe.photos}
-      />
+      {activeCafe.photos.length > 0 && (
+        <Carousel
+          sliderWidth={sliderWidth}
+          itemWidth={sliderWidth}
+          contentContainerCustomStyle={styles.scroll}
+          renderItem={renderPhoto}
+          data={activeCafe.photos}
+        />
+      )}
     </View>
   );
 };
